@@ -3,40 +3,38 @@ from pydantic import BaseModel
 from datetime import datetime
 from app.kittens.breeds.schemas import SBreed
 
+class SKittenInfo(BaseModel):
+    color: Optional[str] = None
+    age_months: Optional[int] = None
+    height: Optional[int] = None
+    weight: Optional[int] = None
+    breed: SBreed
+    
+    class Config:
+        from_attributes = True  
+
 class SKitten(BaseModel):
-    id:int
+    id: int
     name: str
-    color: str
-    age_months: int
-    breed_id: int
     
     class Config:
         from_attributes = True
-        
-        
+ 
 class SKittenAdd(BaseModel):
     name: str
-    color: str
-    age_months: int
-    breed_id: int
     
     class Config:
         from_attributes = True
         
 class SKittenDetail(BaseModel):
-    id:int
+    id: int
     name: str
-    color: str
-    age_months: int
-    description: Optional[str] = None
-    breed: SBreed
+    info: SKittenInfo
     
-    class Config:
-        from_attributes = True
-        
-class SKittenAddDescript(BaseModel):
-    description: Optional[str] = None
-    
-    class Config:
-        from_attributes = True        
+class SKittenUpdate(BaseModel):
+    color: Optional[str] = None
+    age_months: Optional[int] = None
+    height: Optional[int] = None
+    weight: Optional[int] = None
+    breed_id: int
 

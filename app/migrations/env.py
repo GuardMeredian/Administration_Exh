@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 from app.config import settings
 from app.databases import Base
-from app.kittens.models import Kitten
+from app.kittens.models import Kitten, KittenInfo
 from app.kittens.breeds.models import Breed
 
 # this is the Alembic Config object, which provides

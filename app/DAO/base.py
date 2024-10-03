@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from typing import Generic, TypeVar, Optional, List
+from typing import Any, Dict, Generic, TypeVar, Optional, List, Union
 from sqlalchemy import select, insert, update, delete
 from app.databases import async_session_maker
 
@@ -31,20 +31,18 @@ class BaseDAO(Generic[T]):
             return result.scalars().all()
 
     @classmethod
-    async def create(cls, data: T) -> T:
+    async def create(cls, data: Union[T, Dict[str, Any]]) -> T:
         async with async_session_maker() as session:
-            # Преобразование данных в словарь для вставки, исключая неустановленные поля
-            data_dict = data.model_dump(exclude_unset=True)
-            
-            # Создаем новый экземпляр модели
-            new_instance = cls.model(**data_dict)
-            
-            # Добавляем новую запись в сессию
+            if isinstance(data, dict):
+                # Если данные уже являются словарем, мы можем напрямую передать их в конструктор модели
+                new_instance = cls.model(**data)
+            else:
+                # Если данные являются экземпляром модели, преобразуем их в словарь
+                data_dict = data.model_dump(exclude_unset=True)
+                new_instance = cls.model(**data_dict)
+        
             session.add(new_instance)
-            
-            # Сохраняем изменения
             await session.commit()
-            
             return new_instance
 
     @classmethod
